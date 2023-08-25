@@ -18,6 +18,10 @@ const std::string kVersionFilename{"/version"};
 const std::string kOSPath{"/etc/os-release"};
 const std::string kPasswordPath{"/etc/passwd"};
 
+// Names
+const std::string kProcessName{"processes"};
+const std::string kRunningProcessesName{"proc_running"};
+
 // System
 float MemoryUtilization();
 long UpTime();
@@ -27,6 +31,9 @@ int TotalProcesses();
 int RunningProcesses();
 std::string OperatingSystem();
 std::string Kernel();
+long _jiffies{0};
+long _activeJiffies{0};
+long _idleJiffies{0};
 
 // CPU
 enum CPUStates {
