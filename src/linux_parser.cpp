@@ -91,7 +91,6 @@ vector<int> LinuxParser::Pids2(){
 // Read and return the system memory utilization
 float LinuxParser::MemoryUtilization() {
   // For memory utilization use: MemTotal - MemFree so only ready the first two lines
-  // TODO: Check if we want in kB or percent
   string key, kbString;
   float MemTotal{0};
   float MemFree{0};
@@ -108,7 +107,7 @@ float LinuxParser::MemoryUtilization() {
     linestream >> key >> MemFree >> kbString;
 
   }
-  return MemTotal - MemFree;
+  return (MemTotal - MemFree) / MemTotal;
 }
 
 // Read and return the system uptime
@@ -124,7 +123,7 @@ long LinuxParser::UpTime() {
     std::istringstream linestream(line);
     linestream >> upTime >> idleTime;
   }
-  // do we want to convert to days or hours?
+
   return upTime; 
 }
 
