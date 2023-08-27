@@ -5,3 +5,4 @@ settings.json
 build/*
 *.json
 .github/**
+workspace.code-workspace
