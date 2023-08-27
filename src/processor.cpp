@@ -7,7 +7,7 @@
 float Processor::Utilization() {
   // get new values
   long newTotal = LinuxParser::Jiffies();
-  long newActive = LinuxParser::ActiveJiffies();
+  //long newActive = LinuxParser::ActiveJiffies();
   long newIdle = LinuxParser::IdleJiffies();
 
   // Calculate Deltas
