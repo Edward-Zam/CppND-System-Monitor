@@ -10,11 +10,11 @@ class Process {
  public:
   Process(int pid);
   int Pid() const;
-  std::string User();                      
-  std::string Command();                   
+  std::string User() const;                      
+  std::string Command() const;                   
   float CpuUtilization() const;                  
-  std::string Ram();                       
-  long int UpTime();                       
+  std::string Ram() const;                       
+  long int UpTime() const;                       
   bool operator<(Process const& a) const;  
 
   // TODO: Declare any necessary private members
