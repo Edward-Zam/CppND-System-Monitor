@@ -19,8 +19,10 @@ const std::string kOSPath{"/etc/os-release"};
 const std::string kPasswordPath{"/etc/passwd"};
 
 // Names
-const std::string kProcessName{"processes"};
-const std::string kRunningProcessesName{"proc_running"};
+const std::string sProcessName{"processes"};
+const std::string sRunningProcessesName{"proc_running"};
+const std::string sUID{"Uid:"};
+const std::string sVmSize{"VmSize:"};
 
 // System
 float MemoryUtilization();
@@ -31,9 +33,6 @@ int TotalProcesses();
 int RunningProcesses();
 std::string OperatingSystem();
 std::string Kernel();
-long _jiffies{0};
-long _activeJiffies{0};
-long _idleJiffies{0};
 
 // CPU
 enum CPUStates {
