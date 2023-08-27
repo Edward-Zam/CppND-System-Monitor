@@ -27,13 +27,26 @@ int Process::Pid() const {
 }
 
 // Return this process's CPU utilization
-float Process::CpuUtilization() const { 
-  long upTime = LinuxParser::UpTime(_iPid);
-  if( upTime > 0 )
+float Process::CpuUtilization() {
+  // Get new values
+  long newUpTime = LinuxParser::UpTime(_iPid);
+  long newActiveTime = LinuxParser::ActiveJiffies(_iPid)/sysconf(_SC_CLK_TCK);
+
+  // Calculate Deltas
+  float deltaTotal = float(newUpTime) - float(_iPrevUpTime);
+  float deltaActive = float(newActiveTime) - float(_iPrevActive);
+  
+  float utilization{0};
+  if( deltaTotal > 0 )
   {
-    return float(LinuxParser::ActiveJiffies(_iPid)/sysconf(_SC_CLK_TCK)) / float(upTime);
+    utilization = deltaActive / deltaTotal;
   }
-  return 0;
+  
+  // Save new olds
+  _iPrevActive = newActiveTime;
+  _iPrevUpTime = newActiveTime;
+
+  return utilization;
 }
 
 // Return the command that generated this process

@@ -12,15 +12,17 @@ class Process {
   int Pid() const;
   std::string User() const;                      
   std::string Command() const;                   
-  float CpuUtilization() const;                  
+  float CpuUtilization() ;                  
   std::string Ram() const;                       
   long int UpTime() const;                       
-  bool operator<(Process const& a) const;  
+  bool operator<(Process const& a) const;
 
   // TODO: Declare any necessary private members
  private:
   int _iPid;
   long int _iUptime;
+  long _iPrevUpTime{0};
+  long _iPrevActive{0};
   float _fUtilization;
   std::string _sUid;
   std::string _sUser;
