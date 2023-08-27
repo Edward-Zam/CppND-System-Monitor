@@ -101,14 +101,14 @@ float LinuxParser::MemoryUtilization() {
     linestream >> key >> MemTotal >> kbString;
 
     std::getline(stream, line);
-    linestream.str(line);
-    linestream >> key >> MemFree >> kbString;
+    std::istringstream linestream2(line);
+    linestream2 >> key >> MemFree >> kbString;
 
   }
   return (MemTotal - MemFree) / MemTotal;
 }
 
-// Read and return the system uptime
+// Read and return the system uptime (in seconds)
 long LinuxParser::UpTime() { 
   // The first value of /proc/uptime
   long upTime{0};
@@ -326,7 +326,7 @@ string LinuxParser::User(int pid) {
   return user; 
 }
 
-// Read and return the uptime of a process
+// Read and return the uptime of a process, in seconds
 long LinuxParser::UpTime(int pid) {
   string line, value;
   long upTime{0};
@@ -351,9 +351,9 @@ long LinuxParser::UpTime(int pid) {
   
   //This is where it gets a little tricky, the starttime is "the time the process started
   // after system boot" and not uptime directly. So grab the system uptime and subtract
-  // starttime to get pid uptime? I think..
-  long systemUptime = UpTime();
-  long startTime = stol(values[21]); // see proc man page
+  // starttime to get pid uptime.
+  long systemUptime = UpTime(); // This is already in seconds
+  long startTime = stol(values[21]) / sysconf(_SC_CLK_TCK); // see proc man page
   upTime = systemUptime - startTime;
   
   return upTime;

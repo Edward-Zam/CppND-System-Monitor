@@ -31,7 +31,7 @@ float Process::CpuUtilization() const {
   long upTime = LinuxParser::UpTime(_iPid);
   if( upTime > 0 )
   {
-    return float(LinuxParser::ActiveJiffies(_iPid)) / float(upTime);
+    return float(LinuxParser::ActiveJiffies(_iPid)/sysconf(_SC_CLK_TCK)) / float(upTime);
   }
   return 0;
 }
@@ -54,12 +54,12 @@ string Process::User() const {
 
 // Return the age of this process (in seconds)
 long int Process::UpTime() const {
-  return LinuxParser::UpTime(_iPid) / sysconf(_SC_CLK_TCK);
+  return LinuxParser::UpTime(_iPid);
 }
 
 // Overload the "less than" comparison operator for Process objects
 bool Process::operator<(Process const& a) const { 
   // We can use CPU Utilization or RAM to sort
-  // return Ram() < a.Ram();
-  return CpuUtilization() < a.CpuUtilization();
+  return stol(Ram()) < stol(a.Ram());
+  //return CpuUtilization() < a.CpuUtilization();
 }
