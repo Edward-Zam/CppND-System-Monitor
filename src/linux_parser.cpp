@@ -49,34 +49,14 @@ string LinuxParser::Kernel() {
   return kernel;
 }
 
-vector<int> LinuxParser::Pids() {
-  vector<int> pids;
-  DIR* directory = opendir(kProcDirectory.c_str());
-  struct dirent* file;
-  while ((file = readdir(directory)) != nullptr) {
-    // Is this a directory?
-    if (file->d_type == DT_DIR) {
-      // Is every character of the name a digit?
-      string filename(file->d_name);
-      if (std::all_of(filename.begin(), filename.end(), isdigit)) {
-        int pid = stoi(filename);
-        pids.push_back(pid);
-      }
-    }
-  }
-  closedir(directory);
-  return pids;
-}
-
 // BONUS: Update this to use std::filesystem
-vector<int> LinuxParser::Pids2(){
+vector<int> LinuxParser::Pids(){
   vector<int>pids;
-  //auto it = std::experimental::filesystem::directory_iterator("/proc/");
   for(const auto& entry : std::experimental::filesystem::directory_iterator(kProcDirectory))
   {
     if (std::experimental::filesystem::is_directory(entry.status()))
     {
-      string filename(entry.path().string());
+      string filename(entry.path().filename().string());
       if (std::all_of(filename.begin(), filename.end(), isdigit)) {
         int pid = stoi(filename);
         pids.push_back(pid);
@@ -90,7 +70,7 @@ vector<int> LinuxParser::Pids2(){
 float LinuxParser::MemoryUtilization() {
   // For memory utilization use: MemTotal - MemFree so only ready the first two lines
   string key, kbString;
-  float MemTotal{0};
+  float MemTotal{1};
   float MemFree{0};
   string line;
   std::ifstream stream(kProcDirectory + kMeminfoFilename);
@@ -105,6 +85,7 @@ float LinuxParser::MemoryUtilization() {
     linestream2 >> key >> MemFree >> kbString;
 
   }
+
   return (MemTotal - MemFree) / MemTotal;
 }
 
@@ -131,7 +112,6 @@ long LinuxParser::Jiffies() {
 }
 
 // Read and return the number of active jiffies for a PID
-// REMOVE: [[maybe_unused]] once you define the function
 long LinuxParser::ActiveJiffies(int pid) { 
   long activeJiffies{0};
   string line, value;
@@ -172,6 +152,10 @@ long LinuxParser::ActiveJiffies(int pid) {
 // Read and return the number of active jiffies for the system
 long LinuxParser::ActiveJiffies() { 
   std::vector<string> totalJiffies = CpuUtilization();
+  if( totalJiffies.size() == 0 )
+  {
+    return 0;
+  }
   long activeJiffies = stol(totalJiffies[CPUStates::kUser_]) + stol(totalJiffies[CPUStates::kNice_]) + 
     				  stol(totalJiffies[CPUStates::kSystem_]) + stol(totalJiffies[CPUStates::kIRQ_]) + 
     				  stol(totalJiffies[CPUStates::kSoftIRQ_]);
@@ -182,6 +166,10 @@ long LinuxParser::ActiveJiffies() {
 // Read and return the number of idle jiffies for the system
 long LinuxParser::IdleJiffies() { 
   std::vector<string> totalJiffies = CpuUtilization();
+  if( totalJiffies.size() == 0 )
+  {
+    return 0;
+  }
   long idleJiffies = stol(totalJiffies[CPUStates::kIdle_]) + stol(totalJiffies[CPUStates::kIOwait_]) + 
     				  stol(totalJiffies[CPUStates::kSteal_]);
   
@@ -266,7 +254,7 @@ string LinuxParser::Command(int pid) {
 
 // Read and return the memory used by a process
 string LinuxParser::Ram(int pid) { 
-  string line, key, value;
+  string line, key, value{"0"};
   std::ifstream stream(kProcDirectory + std::to_string(pid) + kStatusFilename);
   if( stream.is_open() )
   {
@@ -309,6 +297,12 @@ string LinuxParser::Uid(int pid) {
 string LinuxParser::User(int pid) {
   string line, user, x, uid;
   string userId = Uid(pid);
+  // The UID "0" is reserved for the default root account, return "root"
+  if( userId == "0" )
+  {
+    return "root";
+  }
+ 
   std::ifstream stream(kProcDirectory + std::to_string(pid) + kPasswordPath);
   if( stream.is_open() )
   {

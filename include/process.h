@@ -17,7 +17,7 @@ class Process {
   long int UpTime() const;                       
   bool operator<(Process const& a) const;
 
-  // TODO: Declare any necessary private members
+  // Declare any necessary private members
  private:
   int _iPid;
   long int _iUptime;

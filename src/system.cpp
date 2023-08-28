@@ -14,21 +14,24 @@ using std::size_t;
 using std::string;
 using std::vector;
 
-// TODO: Return the system's CPU
+// Return the system's CPU
 Processor& System::Cpu() { return cpu_; }
 
 // Return a container composed of the system's processes
 vector<Process>& System::Processes() {
   vector<int> pids = LinuxParser::Pids();
   processes_.clear();
-  for( auto i:pids )
+  if( !pids.empty() )
   {
-      Process process(i);
-      processes_.push_back(process);
+    for( auto i:pids )
+    {
+        Process process(i);
+        processes_.push_back(process);
+    }
+    // We've overloaded the < operator, don't need to 
+    // pass in a sort method
+    std::sort(processes_.rbegin(), processes_.rend());
   }
-  // We've overloaded the < operator, don't need to 
-  // pass in a sort method
-  std::sort(processes_.rbegin(), processes_.rend());
 
   return processes_;
 }
