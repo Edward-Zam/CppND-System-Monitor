@@ -2,12 +2,12 @@
 #include "linux_parser.h"
 
 // Return the aggregate CPU utilization
-// We're going to calculate aggregate CPU utilization based on Vangelis' response in
+// We're going to calculate aggregate CPU utilization based on Vangelis'
+// response in
 // https://stackoverflow.com/questions/23367857/accurate-calculation-of-cpu-usage-given-in-percentage-in-linux
 float Processor::Utilization() {
   // get new values
   long newTotal = LinuxParser::Jiffies();
-  //long newActive = LinuxParser::ActiveJiffies();
   long newIdle = LinuxParser::IdleJiffies();
 
   // Calculate Deltas

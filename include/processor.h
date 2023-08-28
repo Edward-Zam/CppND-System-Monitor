@@ -7,9 +7,9 @@ class Processor {
 
   // Declare any necessary private members
  private:
- // Store previous values here
- long _prevIdle{0};
- long _prevTotal{0};
+  // Store previous values here
+  long _prevIdle{0};
+  long _prevTotal{0};
 };
 
 #endif
