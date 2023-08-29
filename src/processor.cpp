@@ -15,10 +15,15 @@ float Processor::Utilization() {
   float deltaIdle = float(newIdle) - float(_prevIdle);
 
   float utilization = (deltaTotal - deltaIdle) / deltaTotal;
+  if( utilization == 0.0f )
+  {
+    utilization = _prevUtilization;
+  }
 
   // Save new olds
   _prevIdle = newIdle;
   _prevTotal = newTotal;
+  _prevUtilization = utilization;
 
   return utilization;
 }

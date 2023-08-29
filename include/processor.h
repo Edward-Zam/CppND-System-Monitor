@@ -10,6 +10,7 @@ class Processor {
   // Store previous values here
   long _prevIdle{0};
   long _prevTotal{0};
+  long _prevUtilization{0};
 };
 
 #endif
