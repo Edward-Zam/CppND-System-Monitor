@@ -71,6 +71,7 @@ float LinuxParser::MemoryUtilization() {
   string key, kbString;
   float MemTotal{1};
   float MemFree{0};
+  float MemAvailable{0};
   string line;
   std::ifstream stream(kProcDirectory + kMeminfoFilename);
   if (stream.is_open()) {
@@ -81,9 +82,13 @@ float LinuxParser::MemoryUtilization() {
     std::getline(stream, line);
     std::istringstream linestream2(line);
     linestream2 >> key >> MemFree >> kbString;
+
+    std::getline(stream, line);
+    std::istringstream linestream3(line);
+    linestream3 >> key >> MemAvailable >> kbString;
   }
 
-  return (MemTotal - MemFree) / MemTotal;
+  return MemAvailable / MemTotal;
 }
 
 // Read and return the system uptime (in seconds)

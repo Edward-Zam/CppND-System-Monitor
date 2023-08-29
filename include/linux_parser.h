@@ -20,7 +20,7 @@ const std::string kPasswordPath{"/etc/passwd"};
 
 // Names
 const std::string sProcessName{"processes"};
-const std::string sRunningProcessesName{"proc_running"};
+const std::string sRunningProcessesName{"procs_running"};
 const std::string sUID{"Uid:"};
 const std::string sVmSize{"VmSize:"};
 
